@@ -97,13 +97,68 @@ specialCharactersCount: 1
 ```
 ### Example #5
 ```
+Content-Type: application/xml
+POST http://localhost:8082/api/convert/statistics?responseFormat=txt
+<Statistics>
+    <isWord>false</isWord>
+    <isNumber>false</isNumber>
+    <isLower>false</isLower>
+    <isUpper>false</isUpper>
+    <characterCount>10</characterCount>
+    <letterCount>7</letterCount>
+    <digitCount>2</digitCount>
+    <lowercaseLetterCount>1</lowercaseLetterCount>
+    <uppercaseLetterCount>6</uppercaseLetterCount>
+    <whitespaceCount>0</whitespaceCount>
+    <specialCharactersCount>1</specialCharactersCount>
+</Statistics>
+```
+```
+HTTP 200 OK
+isWord: false
+isNumber: false
+isLower: false
+isUpper: false
+characterCount: 10
+letterCount: 7
+digitCount: 2
+lowercaseLetterCount: 1
+uppercaseLetterCount: 6
+whitespaceCount: 0
+specialCharactersCount: 1
+```
+### Example #6
+```
+Content-Type: text/csv
+POST http://localhost:8082/api/convert/statistics?responseFormat=json
+characterCount,digitCount,isLower,isNumber,isUpper,isWord,letterCount,lowercaseLetterCount,specialCharactersCount,uppercaseLetterCount,whitespaceCount
+10,2,false,false,false,false,7,1,1,6,0
+```
+```
+HTTP 200 OK
+{
+    "isWord": false,
+    "isNumber": false,
+    "isLower": false,
+    "isUpper": false,
+    "characterCount": 10,
+    "letterCount": 7,
+    "digitCount": 2,
+    "lowercaseLetterCount": 1,
+    "uppercaseLetterCount": 6,
+    "whitespaceCount": 0,
+    "specialCharactersCount": 1
+}
+```
+### Example #7
+```
 GET http://localhost:8082/api/statistics?data=eXAMPLE12$&requestFormat=WRONG&responseFormat=txt
 ```
 ```
 400 Bad Request
 [400] during [GET] to [http://localhost:8081/api/statistics?data=eXAMPLE12%24&format=WRONG] [StringApiWrapperClient#getStatistics(Map)]: [Failed for: [WRONG]. Given format is not supported]
 ```
-### Example #6
+### Example #8
 ```
 GET http://localhost:8082/api/statistics?data=eXAMPLE12$&requestFormat=txt&responseFormat=WRONG
 ```
