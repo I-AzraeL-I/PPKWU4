@@ -9,10 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -33,10 +30,7 @@ public class StringController {
         var params = Map.of(
                 "data", data,
                 "format", requestFormat);
-        var response = stringApiClient.getStatistics(params);
-        if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST))
-            throw new IncorrectMediaTypeException(requestFormat, "Given format is not supported");
-        var body = response.getBody();
+        var body = stringApiClient.getStatistics(params).getBody();
         var mediaType = parseMediaType(responseFormat);
         return responseWithMediaType(body, mediaType);
     }
@@ -46,10 +40,7 @@ public class StringController {
         var params = Map.of(
                 "data", data,
                 "format", requestFormat);
-        var response = stringApiClient.isAlpha(params);
-        if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST))
-            throw new IncorrectMediaTypeException(requestFormat, "Given format is not supported");
-        var body = response.getBody();
+        var body = stringApiClient.isAlpha(params).getBody();
         var mediaType = parseMediaType(responseFormat);
         return responseWithMediaType(body, mediaType);
     }
@@ -59,10 +50,7 @@ public class StringController {
         var params = Map.of(
                 "data", data,
                 "format", requestFormat);
-        var response = stringApiClient.isNumber(params);
-        if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST))
-            throw new IncorrectMediaTypeException(requestFormat, "Given format is not supported");
-        var body = response.getBody();
+        var body = stringApiClient.isNumber(params).getBody();
         var mediaType = parseMediaType(responseFormat);
         return responseWithMediaType(body, mediaType);
     }
@@ -72,10 +60,7 @@ public class StringController {
         var params = Map.of(
                 "data", data,
                 "format", requestFormat);
-        var response = stringApiClient.isLower(params);
-        if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST))
-            throw new IncorrectMediaTypeException(requestFormat, "Given format is not supported");
-        var body = response.getBody();
+        var body = stringApiClient.isLower(params).getBody();
         var mediaType = parseMediaType(responseFormat);
         return responseWithMediaType(body, mediaType);
     }
@@ -85,12 +70,31 @@ public class StringController {
         var params = Map.of(
                 "data", data,
                 "format", requestFormat);
-        var response = stringApiClient.isUpper(params);
-        if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST))
-            throw new IncorrectMediaTypeException(requestFormat, "Given format is not supported");
-        var body = response.getBody();
+        var body = stringApiClient.isUpper(params).getBody();
         var mediaType = parseMediaType(responseFormat);
         return responseWithMediaType(body, mediaType);
+    }
+
+    @PostMapping(value = "/convert/statistics", consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE,
+            MediaType.TEXT_PLAIN_VALUE,
+            MediaTypeExtended.TEXT_CSV_VALUE
+    })
+    public ResponseEntity<Statistics> convertStatistics(@RequestBody Statistics statistics, @RequestParam String responseFormat) {
+        var mediaType = parseMediaType(responseFormat);
+        return responseWithMediaType(statistics, mediaType);
+    }
+
+    @PostMapping(value = "/convert/boolean", consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE,
+            MediaType.TEXT_PLAIN_VALUE,
+            MediaTypeExtended.TEXT_CSV_VALUE
+    })
+    public ResponseEntity<Boolean> convertBoolean(@RequestBody Boolean aBoolean, @RequestParam String responseFormat) {
+        var mediaType = parseMediaType(responseFormat);
+        return responseWithMediaType(aBoolean, mediaType);
     }
 
     private <T> ResponseEntity<T> responseWithMediaType(T body, MediaType mediaType) {
